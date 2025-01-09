@@ -53,6 +53,10 @@ public class CVFeedbackChatbotServiceImpl implements CVFeedbackChatbotService {
         Message systemMessage = systemPromptTemplate.createMessage();
         Prompt prompt = new Prompt(String.valueOf(List.of(resume, systemMessage)));
         Flux<ChatResponse> chatResponse = openAiChatModel.stream(prompt);
-        return chatResponse.map(response -> Optional.ofNullable(response.getResult().getOutput().getContent()).orElse("default"));
+        return chatResponse.map(response ->
+                Optional.ofNullable(response.getResult().getOutput().getContent())
+                        .map(content -> String.join(" ", content))
+                        .orElse("")
+        );
     }
 }
